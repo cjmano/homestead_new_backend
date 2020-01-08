@@ -1,6 +1,8 @@
 const Category = require('../models/category');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 
+
+
 exports.categoryById = (req, res, next, id) =>{
     Category.findById(id).exec((err, category) =>{
         if(err || !category){
@@ -55,26 +57,20 @@ exports.update = (req, res) => {
 
 
 //remove category
+
 exports.remove = (req, res) => {
     const category = req.category;
-    Product.find({ category }).exec((err, data) => {
-        if (data.length >= 1) {
+    category.remove((err, data) => {
+        if (err) {
             return res.status(400).json({
-                message: `Sorry. You cant delete ${category.name}. It has ${data.length} associated products.`
+            error: errorHandler(err)
             });
-        } else {
-            category.remove((err, data) => {
-                if (err) {
-                    return res.status(400).json({
-                        error: errorHandler(err)
-                    });
-                }
+        } 
                 res.json({
                     message: 'Category deleted'
                 });
             });
-        }
-    });
+   
 };
 
 
